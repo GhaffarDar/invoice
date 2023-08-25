@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="robots" content="noindex, nofollow">
-    <title>Invoice Generator | Espot Dispatch</title>
+    <title>Invoice | Espot Dispatch</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -188,7 +188,6 @@
             <div class="from">
                 <h3>From:</h3>
                 <p>Espot Dispatch</p>
-				<p>+1 (339) 298-8163</p>
 				<p>contact@espotdispatch.com</p>
                 <p>350 Springfield Ave, Suite #30, Summit, NJ 07901</p>
             </div>
@@ -248,7 +247,7 @@
             <h3>Total: <span id="invoice-total-amount" class="text-red">$0.00</span></h3>
         </div>
         <div class="invoice-footer">
-            <p><span class="text-red">Please send remittance to <a class="no-print" href="tel:+13392988163">+1 (339) 298-8163</a></span></p>
+            <p><span class="text-red">Please send remittance to +1 (339) 298-8163</span></p>
         </div>
         <div class="invoice-buttons">
             <button class="add-button" onclick="addRow()">Add Row</button>
@@ -319,10 +318,6 @@
                 totalElement.textContent = '';
             }
         }
-		    .invoice-footer a {
-    display: none; /* Hide the URL link when printing */
-}
-
     </script>
 </body>
 </html>
