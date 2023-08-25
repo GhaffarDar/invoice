@@ -1,343 +1,323 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8" />
-		<meta name="robots" content="noindex, nofollow">
-  <!-- load the jsPDF library -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <!-- Option 1: Include in HTML -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
-  <!-- load the html2canvas library -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-		<title>Create New Payment | Quick Quality Dispatch</title>
-		<style>
-			.invoice-box {
-				max-width: 800px;
-				margin: auto;
-				padding: 30px;
-				border: 1px solid #eee;
-				box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-				font-size: 16px;
-				line-height: 24px;
-				font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
-				color: #555;
-			}
+<head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex, nofollow">
+    <title>Invoice Generator | Espot Dispatch</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
 
-			.invoice-box table {
-				width: 100%;
-				line-height: inherit;
-				text-align: left;
-			}
+        .invoice {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            border-radius: 5px;
+        }
 
-			.invoice-box table td {
-				padding: 5px;
-				vertical-align: top;
-			}
+        .invoice-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
 
-			.invoice-box table tr td:nth-child(2) {
-				text-align: left;
-			}
+        .invoice-header h1 {
+            color: #333;
+        }
 
-			.invoice-box table tr.top table td {
-				padding-bottom: 20px;
-			}
+        .invoice-from-to {
+            display: flex;
+            justify-content: space-between;
+        }
 
-			.invoice-box table tr.top table td.title {
-				font-size: 45px;
-				line-height: 45px;
-				color: #333;
-			}
+        .invoice-details {
+            margin-top: 20px;
+        }
 
-			.invoice-box table tr.information table td {
-				padding-bottom: 40px;
-			}
+        .invoice-details table {
+            width: 100%;
+            border-collapse: collapse;
+        }
 
-			.invoice-box table tr.heading td {
-				background: #eee;
-				border-bottom: 1px solid #ddd;
-				font-weight: bold;
-			}
+        .invoice-details th, .invoice-details td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
 
-		.content {
-			display: none;
-		}
-			.invoice-box table tr.details td {
-				padding-bottom: 20px;
-			}
+        .invoice-details th {
+            background-color: #f4f4f4;
+        }
 
-			.invoice-box table tr.item td {
-				border-bottom: 1px solid #eee;
-			}
+        .invoice-details input[type="text"] {
+            width: 100%;
+            padding: 5px;
+            border: none;
+            outline: none;
+        }
 
-			.invoice-box table tr.item.last td {
-				border-bottom: none;
-			}
+        .invoice-items {
+            margin-top: 20px;
+        }
 
-			.invoice-box table tr.total td:nth-child(4) {
-				border-top: 2px solid #eee;
-				font-weight: bold;
-			}
+        .invoice-items table {
+            width: 100%;
+            border-collapse: collapse;
+        }
 
-			@media only screen and (max-width: 600px) {
-				.invoice-box table tr.top table td {
-					width: 100%;
-					display: block;
-					text-align: center;
-				}
+        .invoice-items th, .invoice-items td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
 
-				.invoice-box table tr.information table td {
-					width: 100%;
-					display: block;
-					text-align: center;
-				}
-			}
+        .invoice-items th {
+            background-color: #f4f4f4;
+        }
 
-			/** RTL **/
-			.invoice-box.rtl {
-				direction: rtl;
-				font-family: Tahoma, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
-			}
+        .invoice-items input[type="text"] {
+            width: 100%;
+            padding: 5px;
+            border: none;
+            outline: none;
+        }
 
-			.invoice-box.rtl table {
-				text-align: left;
-			}
+        .invoice-footer {
+            margin-top: 20px;
+            text-align: center;
+            color: #888;
+        }
 
-			.invoice-box.rtl table tr td:nth-child(2) {
-				text-align: left;
-			}
-		</style>
+        .text-red {
+            color: #ff0000;
+        }
 
-	<script>
-	var _0x52edfb=_0x364b;(function(_0x3b536b,_0x2d2097){var _0x85a70e=_0x364b,_0x5016c7=_0x3b536b();while(!![]){try{var _0x23141d=-parseInt(_0x85a70e(0xe7))/0x1*(-parseInt(_0x85a70e(0xd9))/0x2)+-parseInt(_0x85a70e(0xd8))/0x3*(-parseInt(_0x85a70e(0xe2))/0x4)+-parseInt(_0x85a70e(0xdd))/0x5+-parseInt(_0x85a70e(0xe4))/0x6+parseInt(_0x85a70e(0xdc))/0x7+-parseInt(_0x85a70e(0xea))/0x8*(parseInt(_0x85a70e(0xe8))/0x9)+-parseInt(_0x85a70e(0xe1))/0xa*(parseInt(_0x85a70e(0xe5))/0xb);if(_0x23141d===_0x2d2097)break;else _0x5016c7['push'](_0x5016c7['shift']());}catch(_0xbe2e83){_0x5016c7['push'](_0x5016c7['shift']());}}}(_0x28cc,0x37b62),window[_0x52edfb(0xeb)]=function(){var _0x1a9ac4=_0x52edfb,_0x1b48dd=_0x1a9ac4(0xda),_0xd1402a=prompt('Please\x20enter\x20your\x20PIN:');_0xd1402a===_0x1b48dd?document[_0x1a9ac4(0xdf)](_0x1a9ac4(0xe3))['style'][_0x1a9ac4(0xe0)]=_0x1a9ac4(0xdb):(alert(_0x1a9ac4(0xe9)),window['location'][_0x1a9ac4(0xde)](_0x1a9ac4(0xe6)));});function _0x364b(_0xc2301c,_0x170202){var _0x28cc06=_0x28cc();return _0x364b=function(_0x364bf2,_0x1014c0){_0x364bf2=_0x364bf2-0xd8;var _0x5bdcf8=_0x28cc06[_0x364bf2];return _0x5bdcf8;},_0x364b(_0xc2301c,_0x170202);}function _0x28cc(){var _0x621669=['134ktUdFC','ghaffar','block','2615228hOITUv','189480haTIVD','replace','querySelector','display','68990tvOVCp','20VGqDbz','.content','1490850PUjYIy','363ksUhPg','index.html','4861oExNUn','2242116iReDnO','Access\x20denied!','8eXBntc','onload','175239nVZZgz'];_0x28cc=function(){return _0x621669;};return _0x28cc();}
-	</script>
-	
-	</head>
+        .text-green {
+            color: #4caf50;
+        }
 
-	<body id="printTable">
-	<div class="content">
-		<div class="invoice-box">
-		<style>
-			.invoice-box {
-				max-width: 800px;
-				margin: auto;
-				padding: 30px;
-				border: 1px solid #eee;
-				box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-				font-size: 16px;
-				line-height: 24px;
-				font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
-				color: #555;
-			}
+        .inline-input {
+            display: inline-block;
+            width: 150px;
+            margin-right: 20px;
+        }
 
-			.invoice-box table {
-				width: 100%;
-				line-height: inherit;
-				text-align: left;
-			}
+        .amount-due {
+            background-color: #f4f4f4;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
 
-			.invoice-box table td {
-				padding: 5px;
-				vertical-align: top;
-			}
+        .undo-button {
+            background-color: #ff5722;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+            margin: 20px auto;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
 
-			.invoice-box table tr td:nth-child(2) {
-				text-align: left;
-			}
+        .add-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+            margin: 20px auto;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
 
-			.invoice-box table tr.top table td {
-				padding-bottom: 20px;
-			}
+        .invoice-total {
+            margin-top: 20px;
+            text-align: right;
+        }
 
-			.invoice-box table tr.top table td.title {
-				font-size: 45px;
-				line-height: 45px;
-				color: #333;
-			}
+        .invoice-total h3 {
+            color: #ff0000;
+        }
 
-			.invoice-box table tr.information table td {
-				padding-bottom: 40px;
-			}
+        .flat-rate { /* Added style for Flat Rate input */
+            width: 100%;
+            padding: 5px;
+            border: none;
+            outline: none;
+        }
+		/* Additional styles for print media */
+        @media print {
+            body {
+                background-color: white; /* Set a white background for printing */
+            }
 
-			.invoice-box table tr.heading td {
-				background: #eee;
-				border-bottom: 1px solid #ddd;
-				font-weight: bold;
-			}
+            .invoice {
+                max-width: 100%; /* Make sure the invoice fits within the page */
+                margin: 0; /* Remove margin to maximize use of the page */
+                padding: 0; /* Remove padding for consistency */
+                box-shadow: none; /* Remove any box shadow for printing */
+                border: none; /* Remove border for printing */
+                page-break-after: auto; /* Ensure each invoice starts on a new page */
+            }
 
-		.content {
-			display: none;
-		}
-			.invoice-box table tr.details td {
-				padding-bottom: 20px;
-			}
+            .invoice-buttons {
+                display: none; /* Hide the buttons when printing */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice">
+        <div class="invoice-header">
+            <img src="invoice_logo.png" alt="Your Company Logo" width="200">
+        </div>
+        <div class="invoice-from-to">
+            <div class="from">
+                <h3>From:</h3>
+                <p>Espot Dispatch</p>
+                <p>contact@espotdispatch.com</p>
+            </div>
+            <div class="to">
+                <h3>To:</h3>
+                <p class="inline-input">Company Name: <input type="text" id="client-name"></p>
+                <p class="inline-input">MC Number: <input type="number" id="client-address"></p>
+                <p class="inline-input">Carrier Email: <input type="text" id="client-email"></p>
+            </div>
+        </div>
+        <div class="invoice-details">
+            <table>
+                <tr>
+                    <th><label for="invoice-date">Date:</label></th>
+                    <td><input type="text" id="invoice-date" value="August 15, 2023"></td>
+                </tr>
+                <tr>
+                    <th><label for="invoice-number">Invoice Number:</label></th>
+                    <td><input type="number" id="invoice-number" value="#12345"></td>
+                </tr>
+                <tr>
+                    <th>Dispatcher Name</th>
+                    <td><input type="text" id="dispatcher-name" value="Ghaffar Dar"></td> <!-- Updated Dispatcher Name input -->
+                </tr>
+                <tr>
+                    <th>Accountant Name</th>
+                    <td>Faiz Allen</td>
+                </tr>
+                <tr>
+                    <th class="text-red">Zelle Email</th>
+                    <th class="text-red">Omilogistics3@gmail.com</th>
+                </tr>
+				<tr>
+                    <th class="text-red">Venmo User</th>
+                    <th class="text-red">@OMILogistics</th>
+                </tr>
+            </table>
+        </div>
+        <div class="invoice-items">
+            <table>
+                <tr>
+                    <th>Services (Loads)</th>
+                    <th>Load Amount</th>
+                    <th>Commission</th>
+                    <th>Flat Rate</th> <!-- Added Flat Rate column -->
+                    <th>Amount Due</th>
+                </tr>
+                <tr>
+                    <td><input type="text" value="Where To Where"></td>
+                    <td><input type="text" value="$2.00" id="load-amount-1" oninput="calculateAmountDue(1)"></td>
+                    <td><input type="text" value="50.00%" id="commission-1" oninput="calculateAmountDue(1)"></td>
+                    <td><input type="text" value="$10.00" id="flat-rate-1" oninput="calculateAmountDue(1)"></td> <!-- Added Flat Rate input -->
+                    <td class="amount-due"></td>
+                </tr>
+            </table>
+        </div>
+        <div class="invoice-total">
+            <h3>Total: <span id="invoice-total-amount" class="text-red">$0.00</span></h3>
+        </div>
+        <div class="invoice-footer">
+            <p><span class="text-red">Payment is due within 5 days</span>. <span class="text-green">Thank you for doing business with us! Please send remittance to i.com</span></p>
+        </div>
+        <div class="invoice-buttons">
+            <button class="add-button" onclick="addRow()">Add Row</button>
+            <button class="undo-button" onclick="undoRow()">Delete Row</button>
+			<button class="print-button" onclick="printInvoice()">Print</button>
+			    <script>
+        // ... (your existing JavaScript code) ...
 
-			.invoice-box table tr.item td {
-				border-bottom: 1px solid #eee;
-			}
+        function printInvoice() {
+            window.print();
+        }
+    </script>
+        </div>
+    </div>
+    <script>
+        let rowHistory = [];
 
-			.invoice-box table tr.item.last td {
-				border-bottom: none;
-			}
+        function addRow() {
+            const table = document.querySelector('.invoice-items table');
 
-			.invoice-box table tr.total td:nth-child(4) {
-				border-top: 2px solid #eee;
-				font-weight: bold;
-			}
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td><input type="text" placeholder="Where To Where"></td>
+                <td><input type="text" placeholder="Load Amount" id="load-amount-2" oninput="calculateAmountDue(2)"></td>
+                <td><input type="text" placeholder="Commission" id="commission-2" oninput="calculateAmountDue(2)"></td>
+                <td><input type="text" placeholder="Flat Rate" id="flat-rate-2" oninput="calculateAmountDue(2)"></td> <!-- Added Flat Rate input -->
+                <td class="amount-due"></td>
+            `;
 
-			@media only screen and (max-width: 600px) {
-				.invoice-box table tr.top table td {
-					width: 100%;
-					display: block;
-					text-align: center;
-				}
+            table.appendChild(newRow);
+            rowHistory.push(newRow);
+            calculateTotal();
+        }
 
-				.invoice-box table tr.information table td {
-					width: 100%;
-					display: block;
-					text-align: center;
-				}
-			}
+        function undoRow() {
+            if (rowHistory.length > 0) {
+                const table = document.querySelector('.invoice-items table');
+                const removedRow = rowHistory.pop();
+                table.removeChild(removedRow);
+                calculateTotal();
+            }
+        }
 
-			/** RTL **/
-			.invoice-box.rtl {
-				direction: rtl;
-				font-family: Tahoma, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
-			}
+        function calculateTotal() {
+            const rows = document.querySelectorAll('.invoice-items table tr');
+            let total = 0;
 
-			.invoice-box.rtl table {
-				text-align: left;
-			}
+            for (let i = 1; i < rows.length; i++) {
+                const row = rows[i];
+                const loadAmountInput = row.querySelector('td:nth-child(2) input');
+                const commissionInput = row.querySelector('td:nth-child(3) input');
+                const flatRateInput = row.querySelector('td:nth-child(4) input'); // Added
+                const amountDueCell = row.querySelector('td.amount-due');
 
-			.invoice-box.rtl table tr td:nth-child(2) {
-				text-align: left;
-			}
-		</style>
-			<table cellpadding="0" cellspacing="0" id="myTable">
-				<tr class="top">
-					<td colspan="5">
-						<table>
-							<tr>
-								<td class="title">
-									<img src="original.png" style="width: 100%; max-width: 300px" />
-								</td>
+                const loadAmount = parseFloat(loadAmountInput.value.replace('$', '').trim()) || 0;
+                const commission = parseFloat(commissionInput.value.replace('%', '').trim()) || 0;
+                const flatRate = parseFloat(flatRateInput.value.replace('$', '').trim()) || 0; // Added
+                const amountDue = flatRate > 0 ? flatRate : (loadAmount * (commission / 100));
 
-								<td contentEditable="true">
-									<br><h3>Invoice No: #123</h3><br />
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
+                amountDueCell.textContent = `$${amountDue.toFixed(2)}`;
+                total += amountDue;
+            }
 
-				<tr class="information">
-					<td colspan="4">
-						<table>
-							<tr>
-								<td contentEditable="true">
-									<b>FROM</b><br><br>
-									+1 ‪(339) 298-8163‬<br />
-									quickqualitydispatch@gmail.com<br />
-									 350 Springfield Ave, Suite #30, Summit, NJ 07901
-								</td>
+            const totalElement = document.getElementById('invoice-total-amount');
+            totalElement.textContent = `$${total.toFixed(2)}`;
 
-								<td contentEditable="true">
-									<b>TO</b><br><br>
-									<b>MC No: </b>15000000 <br />
-									<b>Company: </b>Name <br />
-									
-								</td>
-								
-							</tr>
-							<tr>
-								<td contentEditable="true">
-									<span style="color:#1967d2"><b>ZELLE ACCOUNT</b><br><br>
-									<h2><b>Omilogistics3@gmail.com</b></h2></span><br />
-								</td>
-
-								<td contentEditable="true">
-									<b>Account Details</b><br><br>
-									<b>Dispatcher Name :</b> Name<br />
-									<b>Accountant Name  :</b> Faiz Allen<br />
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-
-				<tr class="heading">
-					<td>Services</td>
-					<td>Total</td>
-					<td>Commission</td>
-					<td>Amount Due</td>
-
-				</tr>
-
-				<tr class="item last" id="amount">
-					<td contentEditable="true">Service Name</td>
-
-					<td contentEditable="true">$0.00</td>
-					<td contentEditable="true">0%</td>
-					<td contentEditable="true">$0.00</td>
-				</tr>
-				
-				<tr class="total">
-				
-				<td><br><b>TOTAL</b></td>
-					<td></td>
-					<td></td>
-					
-					<td contentEditable="true"><br><span style="color:#1967d2">$0.00</span></td>
-				</tr>
-			</table>
-			<br><br><br>
-		
-			<p>Please send remittance to quickqualitydispatch@gmail.com</p><br>
-			  <button id="printButton" onclick="print()">Print</button>
-		  <button onclick="addRow()">Add Row</button>
-		</div>
-	</div>
-
-
-  <script>
-    window.jsPDF = window.jspdf.jsPDF;
-    var docPDF = new jsPDF();
-
-    function print() {
-    document.querySelector("#printButton").style.display = "none";
-    document.querySelectorAll("button").forEach(function(button) {
-      button.style.display = "none";
-    });
-      var elementHTML = document.querySelector("#printTable");
-      docPDF.html(elementHTML, {
-        callback: function(docPDF) {
-          docPDF.save('QQD Payment.pdf');
-        },
-        x: 10,
-        y: 5,
-        width: 190,
-        windowWidth: 750
-      });
-    }
-  </script>
-  <script>
-  function addRow() {
-  var table = document.getElementById("myTable");
-  var row = table.insertRow(4); // insert row at the last position
-  var item = row.insertCell(0);
-  var price = row.insertCell(1);
-  var perc = row.insertCell(2);
-  var due = row.insertCell(3);
-  item.innerHTML = "New Item";
-  price.innerHTML = "$0.00";
-  perc.innerHTML = "0%";
-  perc.contentEditable = "true";
-  due.innerHTML = "$0.00";
-  due.contentEditable = "true";
-  price.contentEditable = "true";
-  item.contentEditable = "true";
-  price.class = "item last" ;
-}
-  </script>
-
-	</body>
+            if (total === 0) {
+                totalElement.textContent = '';
+            }
+        }
+    </script>
+</body>
 </html>
