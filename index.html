@@ -248,7 +248,7 @@
             <h3>Total: <span id="invoice-total-amount" class="text-red">$0.00</span></h3>
         </div>
         <div class="invoice-footer">
-            <p><span class="text-red">Please send remittance to +1 (339) 298-8163</span></p>
+            <p><span class="text-red">Please send remittance to <a class="no-print" href="tel:+13392988163">+1 (339) 298-8163</a></span></p>
         </div>
         <div class="invoice-buttons">
             <button class="add-button" onclick="addRow()">Add Row</button>
@@ -319,6 +319,10 @@
                 totalElement.textContent = '';
             }
         }
+		    .invoice-footer a {
+    display: none; /* Hide the URL link when printing */
+}
+
     </script>
 </body>
 </html>
